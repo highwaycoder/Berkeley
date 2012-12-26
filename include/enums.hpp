@@ -25,7 +25,7 @@ namespace berk
     enum EException
     {
       EE_INVALID_SCENE,
-      EE_CUTSCENE_FINISHED
+      EE_LOGOS_FINISHED,
     };
 }
 

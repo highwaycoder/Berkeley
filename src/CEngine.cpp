@@ -53,7 +53,7 @@ void CEngine::render(void)
 	} catch (EException e) {
 		switch(e)
 		{
-			case EE_CUTSCENE_FINISHED:
+			case EE_LOGOS_FINISHED:
 			{
 				current_scene->unload();
 				current_scene = createMainMenu();
