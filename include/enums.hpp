@@ -26,6 +26,7 @@ namespace berk
     {
       EE_INVALID_SCENE,
       EE_LOGOS_FINISHED,
+      EE_CUTSCENE_FINISHED,
     };
 }
 

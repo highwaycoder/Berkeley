@@ -23,8 +23,11 @@ void CCutScene::unload(void)
 
 void CCutScene::render(void)
 {
-	if(finished && cutscene == ECS_LOGO)
+	if(finished)
 	{
-		throw EE_LOGOS_FINISHED;
+		if (cutscene == ECS_LOGO)
+			throw EE_LOGOS_FINISHED;
+		else
+			throw EE_CUTSCENE_FINISHED;
 	}
 }
