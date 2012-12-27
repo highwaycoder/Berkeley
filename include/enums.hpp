@@ -28,6 +28,14 @@ namespace berk
       EE_LOGOS_FINISHED,
       EE_CUTSCENE_FINISHED,
     };
+    
+    enum ERoomDirection
+    {
+       ERD_NORTH,
+       ERD_EAST,
+       ERD_SOUTH,
+       ERD_WEST 
+    };
 }
 
 
