@@ -14,8 +14,10 @@ namespace berk
     class CEngine : public IEngine
     {
         public:
-            CEngine(const EGraphicsLibrary gl,unsigned int xr=BERK_DEFAULT_XRES,unsigned int yr=BERK_DEFAULT_YRES);
-            virtual int run(void);
+            CEngine(const EGraphicsLibrary gl=EGL_OPENGL,unsigned int xr=BERK_DEFAULT_XRES,unsigned int yr=BERK_DEFAULT_YRES);
+            ~CEngine(void);
+            int run(void);
+            void new_game(void);
         protected:
         private:
         // private methods
@@ -26,6 +28,7 @@ namespace berk
             irr::video::IVideoDriver* irrlicht_driver;
             irr::scene::ISceneManager* irrlicht_scene_manager;
             IScene* current_scene;
+            irr::IEventReceiver* event_receiver;
             
             int error_status;
             const EGraphicsLibrary graphics_library;

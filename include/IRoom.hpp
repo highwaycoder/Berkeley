@@ -1,6 +1,9 @@
 #ifndef IROOM_HPP
 #define IROOM_HPP
 
+#include <string>
+#include "enums.hpp"
+
 namespace berk
 {
 	class IRoom
@@ -20,7 +23,9 @@ namespace berk
 		virtual void render(void) = 0;
 		virtual void add_room(ERoomDirection direction, const std::string& room_filename) = 0;
 	protected:
-		IRoom* north,east,south,west;
+	// hack to get around the fact C++ can't specify pointer types in a list
+		typedef IRoom* pIRoom;
+		pIRoom north,east,south,west;
 	};
 };
 

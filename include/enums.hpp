@@ -27,6 +27,7 @@ namespace berk
       EE_INVALID_SCENE,
       EE_LOGOS_FINISHED,
       EE_CUTSCENE_FINISHED,
+      EE_INVALID_ROOM
     };
     
     enum ERoomDirection
@@ -35,6 +36,16 @@ namespace berk
        ERD_EAST,
        ERD_SOUTH,
        ERD_WEST 
+    };
+    
+    enum EMenuButton
+    {
+        EMB_NEW_GAME,
+    };
+    
+    enum ETileType
+    {
+        ETT_BLANK,
     };
 }
 
