@@ -40,15 +40,19 @@ void CRoom::add_room(ERoomDirection direction,IRoom* room)
 	switch(direction)
 	{
 		case ERD_NORTH:
+			room->south = this;
 			north = room;
 			break;
 		case ERD_EAST:
+			room->west = this;
 			east = room;
 			break;
 		case ERD_SOUTH:
+			room->north = this;
 			south = room;
 			break;
 		case ERD_WEST:
+			room->east = this;
 			west = room;
 			break;
 	}
@@ -73,6 +77,17 @@ IRoom* CRoom::move_rooms(ERoomDirection direction)
 			break;
 	}
 	if(rv == NULL) throw EE_INVALID_ROOM;
+	else
+	{
+		// we're no longer the "active" room, so we need to clean up all our 'connections'
+		// note that architecturally this could be done better, but for now this will do the job
+		delete north;
+		delete south;
+		delete west;
+		delete east;
+		north = south = west = east = NULL;
+	}
+	
 	return rv;
 }
 
