@@ -2,6 +2,13 @@
 
 using namespace berk;
 
+SRoomItem createSRoomItem(irr::core::stringw location, irr::core::stringw size)
+{
+	SRoomItem rv;
+	//! \todo create irr::core::rect<irr::s32> from size and irr::core::position2d<irr::s32> from location
+	return rv;
+}
+
 CRoom::CRoom(irr::io::IXMLReader* xml,irr::video::IVideoDriver* vd) : video_driver(vd)
 {
 	while(xml && xml->read())
@@ -23,7 +30,13 @@ CRoom::CRoom(irr::io::IXMLReader* xml,irr::video::IVideoDriver* vd) : video_driv
 				{
 					if(node_name == L"underlay")
 					{
-						//! \todo
+						underlay->items.push_back(
+							xml->getAttributeValueSafe(L"name"),
+								createSRoomItem(
+									xml->getAttributeValueSafe(L"location"),
+									xml->getAttributeValueSafe(L"size")
+								)
+							);
 					}
 					else if(node_name == L"overlay")
 					{
