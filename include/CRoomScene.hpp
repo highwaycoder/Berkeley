@@ -3,7 +3,7 @@
 
 #include "IScene.hpp"
 #include "IRoom.hpp"
-#include "ITile.hpp"
+#include "ISprite.hpp"
 #include "structs.hpp"
 #include <vector>
 #include <map>
@@ -23,10 +23,12 @@ namespace berk
 		virtual void unload(void);
 		virtual void render(void);
 	private:
+		void draw_layer(const SRoomLayer& layer);
+	
 		IRoom* current_room;
 
 		SRoomLayer* underlay;
-		std::vector<ITile*> tiles;
+		std::vector<ISprite*> sprites;
 		SRoomLayer* overlay;
 		
 		irr::video::IVideoDriver* video_driver;

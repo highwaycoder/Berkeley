@@ -1,17 +1,21 @@
-#ifndef ITILE_HPP
-#define ITILE_HPP
+#ifndef ISPRITE_HPP
+#define ISPRITE_HPP
 
 #include "enums.hpp"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#include <irrlicht.h>
+#pragma GCC diagnostic pop
 
 namespace berk
 {
-	class ITile
+	class ISprite
 	{
 	public:
-		ITile(ETileType t) : type(t) {}
+		ISprite(irr::video::ITexture* i,irr::core::position2d<irr::s32> l) : image(i),location(l) {}
 		virtual void render(void) = 0;
 	protected:
-		ETileType type;
+		irr::video::ITexture* image;
+		irr::core::position2d<irr::s32> location;
 	};
 };
 

@@ -18,37 +18,33 @@ void CRoomScene::unload(void)
 	
 }
 
-void CRoomScene::render(void)
+void CRoomScene::draw_layer(const SRoomLayer& layer)
 {
 	using namespace irr;
 	using namespace video;
-	if(underlay != NULL)
+	for(SRoomLayer::const_item_iterator it = layer.items.begin(); it != layer.items.end(); ++it)
 	{
 		video_driver->draw2DImage(
-			underlay->image,
-			underlay->items.begin()->first,
-			underlay->items.begin()->second,
+			layer.image,
+			it->first,
+			it->second,
 			NULL,
 			SColor(255,255,255,255),
 			true);
 	}
+}
+
+void CRoomScene::render(void)
+{
 	
-	for(std::vector<ITile*>::iterator it = tiles.begin(); it != tiles.end(); ++it)
+	if(underlay != NULL)
+		draw_layer(*underlay);
+	
+	for(std::vector<ISprite*>::iterator it = sprites.begin(); it != sprites.end(); ++it)
 	{
 		(*it)->render();
 	}
 	
 	if(overlay != NULL)
-	{
-		for(SRoomLayer::item_iterator it = overlay->items.begin(); it != overlay->items.end(); ++it)
-		{
-			video_driver->draw2DImage(
-				overlay->image,
-				it->first,
-				it->second,
-				NULL,
-				SColor(255,255,255,255),
-				true);
-		}
-	}
+		draw_layer(*overlay);
 }

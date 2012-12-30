@@ -43,9 +43,10 @@ namespace berk
         EMB_NEW_GAME,
     };
     
-    enum ETileType
+    enum EPlayerEventType
     {
-        ETT_BLANK,
+        EPET_DEATH,
+        EPET_PUZZLE_COMPLETE
     };
 }
 

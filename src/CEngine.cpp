@@ -1,6 +1,9 @@
 #include "CEngine.hpp"
 #include "CMainMenu.hpp"
 #include "CEventReceiver.hpp"
+#include "CPlayer.hpp"
+#include "CSprite.hpp"
+#include "CRoom.hpp"
 #include <iostream>
 
 using namespace berk;
@@ -55,19 +58,23 @@ void CEngine::init(void)
 
 void CEngine::new_game(void)
 {
-	if(current_scene) delete current_scene;
-	current_scene = create_room_scene();
+	if(current_scene)
+	{
+		current_scene->unload(); // important to always do this before calling the destructor
+		delete current_scene;
+	}
+	IRoom* starting_room = load_room("rooms/start.xml");
+	ISprite* player_sprite = load_sprite("sprites/player.tga",irr::core::position2d<irr::s32>(
+	
+	));
+	player = new CPlayer(player_sprite,starting_room);
+	current_scene = create_room_scene(player);
 	try {
 		current_scene->load();
 	} catch (EException e) {
 		switch(e)
 		{
-			case EE_INVALID_ROOM:
-			{
-				std::cerr << "Error: Room unavailable.  Shutting down..." << std::endl;
-				throw e;
-				break;
-			}
+			case EE_INVALID_ROOM: // we can't handle this exception, so let's throw it further up the stack
 			default:
 			{
 				// by default, pass the exception further up so we make sure we do actually handle it somewhere
@@ -107,4 +114,37 @@ void CEngine::render(void)
 		}
 	}
 	irrlicht_driver->endScene();
+}
+
+irr::video::ITexture* CEngine::load_image(const std::string& file)
+{
+	irr::video::ITexture* rv;
+	std::map<std::string,irr::video::ITexture*>::iterator loaded_image = loaded_images.find(file);
+	if(loaded_image == loaded_images.end())
+	{
+		rv = irrlicht_driver->getTexture(irr::io::path(file.c_str()));
+	}
+	else
+	{
+		rv = loaded_image->second;
+	}
+	return rv;
+}
+
+IRoom* CEngine::load_room(const std::string& room_file)
+{
+	if(!irrlicht_device->getFileSystem()->existFile(irr::io::path(room_file.c_str())))
+	{
+		#ifdef DEBUG
+		std::cerr << "Could not load room, room file could not be opened: " << room_file << std::endl;
+		#endif
+		return NULL;
+	}
+	irr::io::IXMLReader* xml = irrlicht_device->getFileSystem()->createXMLReader(irr::io::path(room_file.c_str()));
+	return new CRoom(xml);
+}
+
+ISprite* CEngine::load_sprite(const std::string& image_file,irr::core::position2d<irr::s32> sprite_loc)
+{
+	return new CSprite(load_image(image_file),sprite_loc);
 }
