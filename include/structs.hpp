@@ -11,16 +11,16 @@ namespace berk
 {
 	struct SRoomItem
 	{
-		irr::core::position2d<irr::s32> position;
-		irr::core::rect<irr::s32> size;
+		irr::core::position2d<irr::s32> draw_location;
+		irr::core::rect<irr::s32> sheet_location;
 	};
 	
 	struct SRoomLayer
 	{
 		irr::video::ITexture* image;
-		std::map<std::string, SRoomItem> items;
-		typedef std::map<std::string, SRoomItem>::const_iterator const_item_iterator;
-		typedef std::map<std::string, SRoomItem>::iterator item_iterator;
+		std::map<irr::core::stringw, SRoomItem> items;
+		typedef std::map<irr::core::stringw, SRoomItem>::const_iterator const_item_iterator;
+		typedef std::map<irr::core::stringw, SRoomItem>::iterator item_iterator;
 	};
 	
 	struct SPlayerEvent

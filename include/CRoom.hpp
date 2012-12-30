@@ -16,9 +16,11 @@ namespace berk
 	{
 	public:
 		CRoom(irr::io::IXMLReader* xml,irr::video::IVideoDriver* vd);
+		~CRoom();
 		void add_room(ERoomDirection direction,IRoom* room);
 		IRoom* move_rooms(ERoomDirection direction);
 		void delete_room(ERoomDirection direction);
+		void set_room(ERoomDirection direction, IRoom* room);
 		void render(void);
 		void add_sprite(ISprite* sprite);
 	private:
@@ -29,6 +31,7 @@ namespace berk
 		SRoomLayer* overlay;
 		
 		irr::video::IVideoDriver* video_driver;
+		
 	};
 };
 

@@ -63,7 +63,7 @@ void CEngine::new_game(void)
 		current_scene->unload(); // important to always do this before calling the destructor
 		delete current_scene;
 	}
-	IRoom* starting_room = load_room("rooms/start.xml");
+	IRoom* starting_room = load_room("rooms/0.xml");
 	ISprite* player_sprite = load_sprite("sprites/player.tga",irr::core::position2d<irr::s32>(
 	
 	));

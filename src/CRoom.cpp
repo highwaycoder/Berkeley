@@ -2,15 +2,24 @@
 
 using namespace berk;
 
-SRoomItem createSRoomItem(irr::core::stringw location, irr::core::stringw size)
+SRoomItem createSRoomItem(irr::s32 x,irr::s32 y,irr::s32 sheet_loc_x,irr::s32 sheet_loc_y,irr::s32 w, irr::s32 h)
 {
 	SRoomItem rv;
-	//! \todo create irr::core::rect<irr::s32> from size and irr::core::position2d<irr::s32> from location
+	rv.draw_location = irr::core::position2d<irr::s32>(x,y);
+	rv.sheet_location = irr::core::rect<irr::s32>(sheet_loc_x,sheet_loc_y,sheet_loc_x+w,sheet_loc_y+h);
 	return rv;
+}
+
+CRoom::~CRoom()
+{
+	if(underlay) delete underlay;
+	if(overlay) delete overlay;
 }
 
 CRoom::CRoom(irr::io::IXMLReader* xml,irr::video::IVideoDriver* vd) : video_driver(vd)
 {
+	underlay = new SRoomLayer();
+	overlay = new SRoomLayer();
 	while(xml && xml->read())
 	{
 		irr::core::stringw node_name = xml->getNodeName();
@@ -30,12 +39,14 @@ CRoom::CRoom(irr::io::IXMLReader* xml,irr::video::IVideoDriver* vd) : video_driv
 				{
 					if(node_name == L"underlay")
 					{
-						underlay->items.push_back(
-							xml->getAttributeValueSafe(L"name"),
-								createSRoomItem(
-									xml->getAttributeValueSafe(L"location"),
-									xml->getAttributeValueSafe(L"size")
-								)
+						underlay->items[xml->getAttributeValueSafe(L"name")] =
+							createSRoomItem(
+								xml->getAttributeValueAsInt(L"x"),
+								xml->getAttributeValueAsInt(L"y"),
+								xml->getAttributeValueAsInt(L"sheet_loc_x"),
+								xml->getAttributeValueAsInt(L"sheet_loc_y"),
+								xml->getAttributeValueAsInt(L"width"),
+								xml->getAttributeValueAsInt(L"height")
 							);
 					}
 					else if(node_name == L"overlay")
@@ -46,6 +57,8 @@ CRoom::CRoom(irr::io::IXMLReader* xml,irr::video::IVideoDriver* vd) : video_driv
 			}
 		}
 	}
+	// we can draw rooms without an overlay, but drawing rooms without an underlay would be pointless
+	if(underlay->image == NULL) throw EE_INVALID_ROOM;
 }
 
 void CRoom::add_room(ERoomDirection direction,IRoom* room)
@@ -53,19 +66,19 @@ void CRoom::add_room(ERoomDirection direction,IRoom* room)
 	switch(direction)
 	{
 		case ERD_NORTH:
-			room->south = this;
+			room->set_room(ERD_SOUTH,this);
 			north = room;
 			break;
 		case ERD_EAST:
-			room->west = this;
+			room->set_room(ERD_WEST,this);
 			east = room;
 			break;
 		case ERD_SOUTH:
-			room->north = this;
+			room->set_room(ERD_NORTH,this);
 			south = room;
 			break;
 		case ERD_WEST:
-			room->east = this;
+			room->set_room(ERD_EAST,this);
 			west = room;
 			break;
 	}
@@ -104,6 +117,25 @@ IRoom* CRoom::move_rooms(ERoomDirection direction)
 	return rv;
 }
 
+void CRoom::set_room(ERoomDirection direction,IRoom* room)
+{
+	switch(direction)
+	{
+		case ERD_NORTH:
+			north = room;
+			break;
+		case ERD_EAST:
+			east = room;
+			break;
+		case ERD_SOUTH:
+			south = room;
+			break;
+		case ERD_WEST:
+			west = room;
+			break;
+	}
+}
+
 void CRoom::delete_room(ERoomDirection direction)
 {
 	switch(direction)
@@ -135,8 +167,8 @@ void CRoom::draw_layer(const SRoomLayer& layer)
 	{
 		video_driver->draw2DImage(
 			layer.image,
-			it->second.position,
-			it->second.size,
+			it->second.draw_location,
+			it->second.sheet_location, // it doesn't matter that this has an x,y component, draw2DImage only reads the w,h components (I hope!)
 			NULL,
 			SColor(255,255,255,255),
 			true);

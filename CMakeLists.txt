@@ -7,7 +7,7 @@ file(GLOB berk_src src/*.cpp)
 include_directories(	include
 						/usr/include/irrlicht)
 						
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -Wextra -g")
 
 # comment this out for release builds (ugly but I don't know the better way of doing it)
 add_definitions(-DDEBUG)
