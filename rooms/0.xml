@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<room>
+	<underlay>
+		<image src="rooms/0/floor.tga" width="" height="" />
+		<item name="floor" location="0,0" size="" />
+	</underlay>
+	<sprites>
+		<sprite src="sprites/door.tga" width="" height="">
+			<location x="" y="" />
+		</sprite>
+		<sprite src="sprites/eye.tga" width="" height="" count="3">
+			<location x="" y="" />
+			<location x="" y="" />
+			<location x="" y="" />
+		</sprite>
+	</sprites>
+	<overlay>
+		<image src="rooms/0/ceiling.tga" width="" height="" optional="1" />
+		<item name="ceiling" location="0,0" size="" />
+	</overlay>
+</room>

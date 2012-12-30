@@ -103,7 +103,11 @@ void CEngine::render(void)
 			}
 			case EE_INVALID_SCENE:
 			{
-				std::cerr << "Warning: invalid scene loaded (or perhaps the scene has been unloaded prematurely?)" << std::endl;
+				std::cerr << "Error: invalid scene loaded (or perhaps the scene has been unloaded prematurely?)" << std::endl;
+				current_scene->unload();
+				delete current_scene;
+				current_scene = NULL; // make sure nothing else tries to delete current_scene again before we quit
+				throw e; // let 'main' run its course
 				break;
 			}
 			default:
@@ -141,7 +145,7 @@ IRoom* CEngine::load_room(const std::string& room_file)
 		return NULL;
 	}
 	irr::io::IXMLReader* xml = irrlicht_device->getFileSystem()->createXMLReader(irr::io::path(room_file.c_str()));
-	return new CRoom(xml);
+	return new CRoom(xml,irrlicht_driver);
 }
 
 ISprite* CEngine::load_sprite(const std::string& image_file,irr::core::position2d<irr::s32> sprite_loc)
