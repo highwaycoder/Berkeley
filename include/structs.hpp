@@ -15,14 +15,6 @@ namespace berk
 		irr::core::rect<irr::s32> sheet_location;
 	};
 	
-	struct SRoomLayer
-	{
-		irr::video::ITexture* image;
-		std::map<irr::core::stringw, SRoomItem> items;
-		typedef std::map<irr::core::stringw, SRoomItem>::const_iterator const_item_iterator;
-		typedef std::map<irr::core::stringw, SRoomItem>::iterator item_iterator;
-	};
-	
 	struct SPlayerEvent
 	{
 		unsigned int points_value;

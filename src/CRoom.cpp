@@ -1,4 +1,6 @@
 #include "CRoom.hpp"
+#include "CRoomOverlay.hpp"
+#include "CRoomUnderlay.hpp"
 
 using namespace berk;
 
@@ -18,8 +20,8 @@ CRoom::~CRoom()
 
 CRoom::CRoom(irr::io::IXMLReader* xml,irr::video::IVideoDriver* vd) : video_driver(vd)
 {
-	underlay = new SRoomLayer();
-	overlay = new SRoomLayer();
+	underlay = new CRoomUnderlay(video_driver);
+	overlay = new CRoomOverlay(video_driver);
 	while(xml && xml->read())
 	{
 		irr::core::stringw node_name = xml->getNodeName();
@@ -31,34 +33,24 @@ CRoom::CRoom(irr::io::IXMLReader* xml,irr::video::IVideoDriver* vd) : video_driv
 				if(irr::core::stringw("image") == xml->getNodeName())
 				{
 					if(node_name == L"underlay")
-						underlay->image = vd->getTexture(xml->getAttributeValueSafe(L"src"));
+						underlay->set_image(vd->getTexture(xml->getAttributeValueSafe(L"src")));
 					else if(node_name == L"overlay")
-						overlay->image = vd->getTexture(xml->getAttributeValueSafe(L"src"));
-				}
-				else if(irr::core::stringw("item") == xml->getNodeName())
-				{
-					if(node_name == L"underlay")
-					{
-						underlay->items[xml->getAttributeValueSafe(L"name")] =
-							createSRoomItem(
-								xml->getAttributeValueAsInt(L"x"),
-								xml->getAttributeValueAsInt(L"y"),
-								xml->getAttributeValueAsInt(L"sheet_loc_x"),
-								xml->getAttributeValueAsInt(L"sheet_loc_y"),
-								xml->getAttributeValueAsInt(L"width"),
-								xml->getAttributeValueAsInt(L"height")
-							);
-					}
-					else if(node_name == L"overlay")
-					{
-						//! \todo
-					}
+						overlay->set_image(vd->getTexture(xml->getAttributeValueSafe(L"src")));
 				}
 			}
 		}
+		if(node_name == L"room")
+		{
+			name = xml->getAttributeValueSafe(L"name");
+		}
 	}
 	// we can draw rooms without an overlay, but drawing rooms without an underlay would be pointless
-	if(underlay->image == NULL) throw EE_INVALID_ROOM;
+	if(!underlay || !underlay->is_valid()) throw EE_INVALID_ROOM;
+}
+
+irr::core::stringw CRoom::get_name(void)
+{
+	return name;
 }
 
 void CRoom::add_room(ERoomDirection direction,IRoom* room)
@@ -159,27 +151,10 @@ void CRoom::delete_room(ERoomDirection direction)
 	}
 }
 
-void CRoom::draw_layer(const SRoomLayer& layer)
-{
-	using namespace irr;
-	using namespace video;
-	for(SRoomLayer::const_item_iterator it = layer.items.begin(); it != layer.items.end(); ++it)
-	{
-		video_driver->draw2DImage(
-			layer.image,
-			it->second.draw_location,
-			it->second.sheet_location, // it doesn't matter that this has an x,y component, draw2DImage only reads the w,h components (I hope!)
-			NULL,
-			SColor(255,255,255,255),
-			true);
-	}
-}
-
-
 void CRoom::render(void)
 {
 	if(underlay != NULL)
-		draw_layer(*underlay);
+		underlay->render();
 	
 	for(std::vector<ISprite*>::iterator it = sprites.begin(); it != sprites.end(); ++it)
 	{
@@ -187,7 +162,7 @@ void CRoom::render(void)
 	}
 	
 	if(overlay != NULL)
-		draw_layer(*overlay);
+		overlay->render();
 }
 
 void CRoom::add_sprite(ISprite* sprite)

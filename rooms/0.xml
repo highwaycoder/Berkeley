@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<room>
+<!-- note: title subject to change -->
+<room name="Level 0-0: Humble Beginnings">
 	<underlay>
 		<image src="rooms/0/floor.tga" width="" height="" />
 		<item name="floor" x="0" y="0" sheet_x_loc="0" sheet_y_loc="0" width="" height="" />

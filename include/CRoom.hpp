@@ -4,10 +4,15 @@
 #include "IRoom.hpp"
 #include "structs.hpp"
 #include "ISprite.hpp"
+#include "IRoomLayer.hpp"
 
+/* -- we really need to sort out the hierarchy of this include
+ * at the moment IRoomLayer includes it so this file doesn't need to
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <irrlicht.h>
 #pragma GCC diagnostic pop
+*/
+
 #include <vector>
 
 namespace berk
@@ -23,12 +28,14 @@ namespace berk
 		void set_room(ERoomDirection direction, IRoom* room);
 		void render(void);
 		void add_sprite(ISprite* sprite);
+		virtual irr::core::stringw get_name(void);
 	private:
-		void draw_layer(const SRoomLayer& layer);
-		
-		SRoomLayer* underlay;
+	
+		irr::core::stringw name;
+		IRoomLayer* underlay;
+		IRoomLayer* tile_layer;
 		std::vector<ISprite*> sprites;
-		SRoomLayer* overlay;
+		IRoomLayer* overlay;
 		
 		irr::video::IVideoDriver* video_driver;
 		

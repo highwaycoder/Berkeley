@@ -3,6 +3,7 @@
 
 #include "ISprite.hpp"
 #include "enums.hpp"
+#include "IRoomLayer.hpp"
 #include <string>
 
 namespace berk
@@ -24,6 +25,7 @@ namespace berk
 		virtual void render(void) = 0;
 		virtual void add_sprite(ISprite* sprite) = 0;
 		virtual void set_room(ERoomDirection direction, IRoom* room) = 0;
+		virtual irr::core::stringw get_name(void) = 0;
 	protected:
 	// hack to get around the fact C++ can't specify pointer types in a list
 		typedef IRoom* IRoom_ptr;
